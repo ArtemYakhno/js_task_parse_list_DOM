@@ -18,7 +18,8 @@ function getEmployees(list) {
   const items = Array.from(list.querySelectorAll('li'));
 
   return items.map((el) => ({
-    name: el.textContent.trim(),
+    name:
+      el.querySelector('.name')?.textContent.trim() || el.textContent.trim(),
     position: el.dataset.position,
     salary: parseSalary(el.dataset.salary),
     age: Number(el.dataset.age),
@@ -27,9 +28,7 @@ function getEmployees(list) {
 
 const ul = document.querySelector('ul');
 
-sortList(ul);
-
-const employeesArr = getEmployees(ul);
-
-// eslint-disable-next-line no-console
-console.log(employeesArr);
+if (ul) {
+  sortList(ul);
+  window.employeesArr = getEmployees(ul);
+}
