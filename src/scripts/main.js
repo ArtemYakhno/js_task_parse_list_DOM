@@ -1,35 +1,35 @@
 'use strict';
 
-function sortList(array) {
-  array.sort((el1, el2) => {
-    const salaryEl1 = Number(el1.dataset.salary.replace(/[^0-9.-]/g, ''));
-    const salaryEl2 = Number(el2.dataset.salary.replace(/[^0-9.-]/g, ''));
-
-    return salaryEl2 - salaryEl1;
-  });
-
-  return array;
+function parseSalary(s) {
+  return Number(s.replace(/[^0-9.-]/g, ''));
 }
 
-function getEmployees(array) {
-  return array.map((el) => {
-    return {
-      name: el.innerHTML,
-      position: el.dataset.position,
-      salary: Number(el.dataset.salary.replace(/[^0-9.-]/g, '')),
-      age: +el.dataset.age,
-    };
-  });
+function sortList(list) {
+  const items = Array.from(list.querySelectorAll('li'));
+
+  items.sort(
+    (a, b) => parseSalary(b.dataset.salary) - parseSalary(a.dataset.salary),
+  );
+
+  items.forEach((item) => list.append(item));
 }
 
-const list = document.querySelector('ul');
-const employees = document.querySelectorAll('ul li');
-const sortArray = sortList([...employees]);
+function getEmployees(list) {
+  const items = Array.from(list.querySelectorAll('li'));
 
-list.innerHTML = '';
+  return items.map((el) => ({
+    name: el.textContent.trim(),
+    position: el.dataset.position,
+    salary: parseSalary(el.dataset.salary),
+    age: Number(el.dataset.age),
+  }));
+}
 
-sortArray.forEach((el) => {
-  list.append(el);
-});
+const ul = document.querySelector('ul');
 
-getEmployees([...employees]);
+sortList(ul);
+
+const employeesArr = getEmployees(ul);
+
+// eslint-disable-next-line no-console
+console.log(employeesArr);
